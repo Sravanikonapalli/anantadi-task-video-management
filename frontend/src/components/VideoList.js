@@ -1,32 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import SearchBar from '../SearchBar'
-const VideoList = () => {
-  const [videos, setVideos] = useState([]);
+import React from 'react';
 
-  useEffect(() => {
-    axios.get('http://localhost:8080/videos')
-      .then(response => {
-        setVideos(response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, []);
+const VideoList = ({ videos, searchTerm }) => {
+  const filteredVideos = videos.filter((video) =>
+    video.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <>
-    <SearchBar/>
     <div>
-      <h1>Video List</h1>
-      <ul>
-        {videos.map(video => (
-          <li key={video._id}>{video.title}</li>
-        ))}
-      </ul>
+      {filteredVideos.map((video) => (
+        <div key={video._id}>
+          <h3>{video.title}</h3>
+          <p>{video.description}</p>
+          <VideoPlayer video={video} />
+        </div>
+      ))}
     </div>
-    </>
   );
 };
 
 export default VideoList;
-
